@@ -10,11 +10,16 @@ import java.util.Collection;
 @RestController
 @RequestMapping(path = "/users")
 public class UserController {
-    UserService service = new UserService();
+   private final UserService service = new UserService();
 
     @PostMapping
-    public User createUser(@RequestBody @Valid UserDto userDto) {
-        return service.createUser(userDto);
+    public UserDto createUser(@RequestBody @Valid User user) {
+        return service.createUser(user);
+    }
+
+    @PatchMapping(path = "/{userId}")
+    public UserDto updateUser(@PathVariable("userId") Integer userId, @RequestBody User user) {
+        return service.updateUser(user, userId);
     }
 
     @GetMapping(path = "/{userId}")
@@ -27,10 +32,6 @@ public class UserController {
         return service.getAll();
     }
 
-    @PatchMapping(path = "/{userId}")
-    public User updateUser(@PathVariable("userId") Integer userId, @RequestBody UserDto userDto) {
-        return service.updateUser(userDto, userId);
-    }
 
     @DeleteMapping(path = "/{userId}")
     public void deleteUser(@PathVariable("userId") Integer userId) {

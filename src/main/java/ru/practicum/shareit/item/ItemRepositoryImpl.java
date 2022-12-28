@@ -10,7 +10,7 @@ import java.util.Collection;
 import java.util.HashMap;
 
 public class ItemRepositoryImpl implements ItemRepository {
-    UserService userService = new UserService();
+    private final UserService userService = new UserService();
 
     private static final HashMap<Integer, Item> items = new HashMap<>();
     private int id = 0;

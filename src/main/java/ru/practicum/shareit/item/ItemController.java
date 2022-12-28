@@ -10,16 +10,16 @@ import java.util.Collection;
 @RestController
 @RequestMapping("/items")
 public class ItemController {
-    ItemService service = new ItemService();
+    private final ItemService service = new ItemService();
 
     @PostMapping
-    public Item createItem(@RequestHeader("X-Sharer-User-Id") Integer userId, @RequestBody @Valid ItemDto itemDto) {
-        return service.create(userId, itemDto);
+    public ItemDto createItem(@RequestHeader("X-Sharer-User-Id") Integer userId, @RequestBody @Valid Item item) {
+        return service.create(userId, item);
     }
 
     @PatchMapping(path = "/{itemId}")
-    public Item updateUser(@RequestHeader("X-Sharer-User-Id") Integer userId, @PathVariable("itemId") Integer itemId, @RequestBody ItemDto itemDto) {
-        return service.update(userId, itemId, itemDto);
+    public ItemDto updateUser(@RequestHeader("X-Sharer-User-Id") Integer userId, @PathVariable("itemId") Integer itemId, @RequestBody Item item) {
+        return service.update(userId, itemId, item);
     }
 
     @GetMapping(path = "/{itemId}")

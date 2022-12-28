@@ -8,24 +8,21 @@ import java.util.Collection;
 
 public class ItemService {
 
-    ItemRepositoryImpl itemRepository = new ItemRepositoryImpl();
+    private final ItemRepositoryImpl itemRepository = new ItemRepositoryImpl();
 
-    public Item create(int userId, ItemDto itemDto) {
-        return itemRepository.create(userId, ItemMapper.fromDtoItem(itemDto));
+    public ItemDto create(int userId, Item item) {
+        return ItemMapper.toItemDto(itemRepository.create(userId, item));
     }
 
+    public ItemDto update(int userId, int itemId, Item item) {
 
-    public Item update(int userId, int itemId, ItemDto itemDto) {
-
-        return itemRepository.update(userId, itemId, ItemMapper.fromDtoItem(itemDto));
+        return ItemMapper.toItemDto(itemRepository.update(userId, itemId, item));
     }
-
 
     public ItemDto getItem(int userId, int itemId) {
 
         return ItemMapper.toItemDto(itemRepository.getItem(userId, itemId));
     }
-
 
     public Collection<ItemDto> getAllItems(int userId) {
 
@@ -35,7 +32,6 @@ public class ItemService {
         }
         return userItems;
     }
-
 
     public Collection<ItemDto> searchItem(int userId, String text) {
         Collection<ItemDto> items = new ArrayList<>();

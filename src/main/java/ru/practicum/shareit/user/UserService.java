@@ -9,15 +9,15 @@ import java.util.Collection;
 
 @RequiredArgsConstructor
 public class UserService {
-    UserRepositoryImpl repository = new UserRepositoryImpl();
+    private final UserRepositoryImpl repository = new UserRepositoryImpl();
 
 
-    public User createUser(UserDto userDto) {
-        return repository.createUser(UserMapper.fromDtoUser(userDto));
+    public UserDto createUser(User user) {
+        return UserMapper.toUserDto(repository.createUser(user));
     }
 
-    public User updateUser(UserDto userDto, int userId) {
-        return repository.updateUser(UserMapper.fromDtoUser(userDto), userId);
+    public UserDto updateUser(User user, int userId) {
+        return UserMapper.toUserDto(repository.updateUser(user, userId));
     }
 
     public UserDto getUserById(int userId) {
