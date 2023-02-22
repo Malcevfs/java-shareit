@@ -1,20 +1,21 @@
 package ru.practicum.shareit.item;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 
 import javax.validation.Valid;
 import java.util.Collection;
-
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/items")
 public class ItemController {
-    private final ItemService service = new ItemService();
+    private final ItemService service;
 
     @PostMapping
     public ItemDto createItem(@RequestHeader("X-Sharer-User-Id") Integer userId, @RequestBody @Valid Item item) {
-        return service.create(userId, item);
+        return service.createItem(userId, item);
     }
 
     @PatchMapping(path = "/{itemId}")
@@ -33,8 +34,7 @@ public class ItemController {
     }
 
     @GetMapping(path = "/search")
-    public Collection<ItemDto> searchItemFromText(@RequestHeader("X-Sharer-User-Id") Integer userId, @RequestParam(value = "text") String text) {
-        return service.searchItem(userId, text);
+    public Collection<ItemDto> searchItemFromText(@RequestParam(value = "text") String text) {
+        return service.searchItem(text);
     }
-
 }

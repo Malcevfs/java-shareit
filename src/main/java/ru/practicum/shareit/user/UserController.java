@@ -1,5 +1,6 @@
 package ru.practicum.shareit.user;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
@@ -7,11 +8,11 @@ import ru.practicum.shareit.user.model.User;
 import javax.validation.Valid;
 import java.util.Collection;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping(path = "/users")
 public class UserController {
-   private final UserService service = new UserService();
-
+    private final UserService service;
     @PostMapping
     public UserDto createUser(@RequestBody @Valid User user) {
         return service.createUser(user);
@@ -32,10 +33,8 @@ public class UserController {
         return service.getAll();
     }
 
-
     @DeleteMapping(path = "/{userId}")
     public void deleteUser(@PathVariable("userId") Integer userId) {
         service.deleteUser(userId);
     }
-
 }

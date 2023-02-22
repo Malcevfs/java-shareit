@@ -61,4 +61,10 @@ public class ErrorHandler {
         log.error("Ошбика предмета: {}", e.getMessage());
         return new ErrorResponse("error", "Ошибка доступа. Пользоваль из запроса не соответсвует владельцу предмета");
     }
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleException(final ItemNotFoundException e) {
+        log.error("Ошбика предмета: {}", e.getMessage());
+        return new ErrorResponse("error", "Предмет не найден");
+    }
 }
