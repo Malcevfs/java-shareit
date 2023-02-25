@@ -11,7 +11,7 @@ import java.util.Collection;
 @RestController
 @RequestMapping("/items")
 public class ItemController {
-    private final ItemService service;
+    private final ItemServiceImpl service;
 
     @PostMapping
     public ItemDto createItem(@RequestHeader("X-Sharer-User-Id") Integer userId, @RequestBody @Valid Item item) {
@@ -24,8 +24,8 @@ public class ItemController {
     }
 
     @GetMapping(path = "/{itemId}")
-    public ItemDto getItemById(@RequestHeader("X-Sharer-User-Id") Integer userId, @PathVariable("itemId") Integer itemId) {
-        return service.getItem(userId, itemId);
+    public ItemDto getItemById(@PathVariable("itemId") Integer itemId) {
+        return service.getItem(itemId);
     }
 
     @GetMapping

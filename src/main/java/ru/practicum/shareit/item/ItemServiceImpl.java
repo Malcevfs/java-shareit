@@ -17,7 +17,7 @@ import java.util.Collection;
 
 @RequiredArgsConstructor
 @Service
-public class ItemService {
+public class ItemServiceImpl {
 
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
@@ -52,7 +52,7 @@ public class ItemService {
         return ItemMapper.toItemDto(itemRepository.save(newItem));
     }
 
-    public ItemDto getItem(int userId, int itemId) {
+    public ItemDto getItem(int itemId) {
         Item newItem = itemRepository.findItemByIdAndAvailableTrue(itemId).orElseThrow(() ->
                 new ItemNotFoundException(String.format("Item с id - %x  не найден", itemId)));
         return ItemMapper.toItemDto(newItem);

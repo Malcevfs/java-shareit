@@ -8,6 +8,6 @@ public class ItemAviableErrorException extends RuntimeException {
     public ItemAviableErrorException(String message) {
 
         super(message);
-        log.error("Ошибка валидации Email");
+        log.error("Ошибка доступности предмета");
     }
 }

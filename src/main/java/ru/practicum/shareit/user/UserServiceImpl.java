@@ -12,7 +12,7 @@ import java.util.Collection;
 
 @RequiredArgsConstructor
 @Service
-public class UserService {
+public class UserServiceImpl {
     private final UserRepository userRepository;
 
     public UserDto createUser(User user) {
