@@ -47,7 +47,12 @@ public class ErrorHandler {
         log.error("Ошбика пользователя: {}", e.getMessage());
         return new ErrorResponse("error", "Пользователь не найден");
     }
-
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleException(final BadRequestException e) {
+        log.error("Ошбика запроса: {}", e.getMessage());
+        return new ErrorResponse("error", "Запрос передан не верно");
+    }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -59,7 +64,7 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleException(final UnsupportedStateException e) {
         log.error("Ошбика параметра state: {}", e.getMessage());
-        return new ErrorResponse("error", "Передан не правильный параметр state");
+        return new ErrorResponse("Unknown state: UNSUPPORTED_STATUS","");
     }
 
     @ExceptionHandler
