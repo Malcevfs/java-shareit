@@ -27,5 +27,6 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
             "and booking.item.id = ?1 " +
             "order by booking.start ")
     Optional<Booking> findNextBooking(int itemId, LocalDateTime now);
+
     Optional<Booking> findFirstByBookerAndItemIdAndEndBefore(User booker, int itemId, LocalDateTime date);
 }
