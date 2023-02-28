@@ -33,13 +33,13 @@ public class ItemServiceImpl {
     private final CommentRepository commentRepository;
 
 
-    public ItemDto createItem(int userId, Item item) { if (item.getAvailable() == null) {
-        throw new ItemAviableErrorException("Параметр Available не может быть пустым");
-    }
+    public ItemDto createItem(int userId, Item item) {
+        if (item.getAvailable() == null) {
+            throw new ItemAviableErrorException("Параметр Available не может быть пустым");
+        }
 
         User user = userRepository.findById(userId).orElseThrow(() ->
                 new UserNotFoundErrorException(String.format("User с id - %x не найден", userId)));
-
 
 
         item.setOwner(user);
@@ -66,12 +66,14 @@ public class ItemServiceImpl {
         }
         return ItemMapper.toItemDto(itemRepository.save(newItem));
     }
+
     @Transactional
     public ItemBookingDto getItem(int userId, int itemId) {
         Item item = itemRepository.findById(itemId).orElseThrow(() ->
                 new ItemNotFoundException(String.format("Item с id - %x  не найден", itemId)));
         return setComments(setBookings(userId, item), itemId);
     }
+
     @Transactional
     public Collection<ItemBookingDto> getAllItems(int userId) {
         Collection<ItemBookingDto> userItems = new ArrayList<>();
