@@ -33,13 +33,14 @@ public class ItemServiceImpl {
     private final CommentRepository commentRepository;
 
 
-    public ItemDto createItem(int userId, Item item) {
+    public ItemDto createItem(int userId, Item item) { if (item.getAvailable() == null) {
+        throw new ItemAviableErrorException("Параметр Available не может быть пустым");
+    }
+
         User user = userRepository.findById(userId).orElseThrow(() ->
                 new UserNotFoundErrorException(String.format("User с id - %x не найден", userId)));
 
-        if (item.getAvailable() == null) {
-            throw new ItemAviableErrorException("Параметр Available не может быть пустым");
-        }
+
 
         item.setOwner(user);
         return ItemMapper.toItemDto(itemRepository.save(item));
@@ -65,13 +66,13 @@ public class ItemServiceImpl {
         }
         return ItemMapper.toItemDto(itemRepository.save(newItem));
     }
-
+    @Transactional
     public ItemBookingDto getItem(int userId, int itemId) {
         Item item = itemRepository.findById(itemId).orElseThrow(() ->
                 new ItemNotFoundException(String.format("Item с id - %x  не найден", itemId)));
         return setComments(setBookings(userId, item), itemId);
     }
-
+    @Transactional
     public Collection<ItemBookingDto> getAllItems(int userId) {
         Collection<ItemBookingDto> userItems = new ArrayList<>();
         for (Item item : itemRepository.getAllByOwnerIdOrderByIdAsc(userId)) {
@@ -96,13 +97,13 @@ public class ItemServiceImpl {
         ItemBookingDto itemDtoBooking = ItemMapper.toItemBookingDto(item);
         if (item.getOwner().getId() == userId) {
             itemDtoBooking.setLastBooking(
-                    bookingRepository.findLastBooking(
+                    bookingRepository.findAllByItemIdAndEndBeforeOrderByStartDesc(
                             itemDtoBooking.getId(), LocalDateTime.now()
-                    ).map(BookingMapper::toBookingItemDto).orElse(null));
+                    ).stream().findFirst().map(BookingMapper::toBookingItemDto).orElse(null));
             itemDtoBooking.setNextBooking(
-                    bookingRepository.findNextBooking(
+                    bookingRepository.findAllByItemIdAndStartAfterOrderByStartAsc(
                             itemDtoBooking.getId(), LocalDateTime.now()
-                    ).map(BookingMapper::toBookingItemDto).orElse(null));
+                    ).stream().findFirst().map(BookingMapper::toBookingItemDto).orElse(null));
         }
         return itemDtoBooking;
     }
