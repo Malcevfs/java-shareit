@@ -13,6 +13,7 @@ import java.util.Collection;
 @RequestMapping(path = "/users")
 public class UserController {
     private final UserServiceImpl service;
+
     @PostMapping
     public UserDto createUser(@RequestBody @Valid User user) {
         return service.createUser(user);

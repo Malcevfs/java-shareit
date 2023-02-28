@@ -47,6 +47,7 @@ public class ErrorHandler {
         log.error("Ошбика пользователя: {}", e.getMessage());
         return new ErrorResponse("error", "Пользователь не найден");
     }
+
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleException(final BadRequestException e) {
@@ -60,6 +61,7 @@ public class ErrorHandler {
         log.error("Ошбика предмета: {}", e.getMessage());
         return new ErrorResponse("error", "Предмет не может быть создан или изменен без статуса доступности");
     }
+
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleException(final UnsupportedStateException e) {
@@ -73,6 +75,7 @@ public class ErrorHandler {
         log.error("Ошбика предмета: {}", e.getMessage());
         return new ErrorResponse("error", "Ошибка доступа. Пользоваль из запроса не соответсвует владельцу предмета");
     }
+
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleException(final ItemNotFoundException e) {
@@ -86,6 +89,7 @@ public class ErrorHandler {
         log.error("Ошбика предмета: {}", e.getMessage());
         return new ErrorResponse("error", "Бронирование не найдено");
     }
+
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleException(final DateTimeException e) {
