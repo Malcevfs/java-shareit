@@ -121,32 +121,35 @@ public class BookingServiceImpl {
 
     private Collection<BookingDto> getBookingDtos(String state, ArrayList<BookingDto> bookings) {
         List<BookingDto> filteredBookings;
-        switch (state) {
-            case "CURRENT" -> {
-                filteredBookings = bookings.stream().filter(booking -> (LocalDateTime.now()).isAfter(booking.getStart()) && (LocalDateTime.now()).isBefore(booking.getEnd())).collect(Collectors.toList());
-                return filteredBookings;
-            }
-            case "PAST" -> {
-                filteredBookings = bookings.stream().filter(booking -> booking.getEnd().isBefore(LocalDateTime.now())).collect(Collectors.toList());
-                return filteredBookings;
-            }
-            case "FUTURE" -> {
-                filteredBookings = bookings.stream().filter(booking -> booking.getStart().isAfter(LocalDateTime.now())).collect(Collectors.toList());
-                return filteredBookings;
-            }
-            case "WAITING" -> {
-                filteredBookings = bookings.stream().filter(booking -> booking.getStatus().equals(Status.WAITING)).collect(Collectors.toList());
-                return filteredBookings;
-            }
-            case "REJECTED" -> {
-                filteredBookings = bookings.stream().filter(booking -> booking.getStatus().equals(Status.REJECTED)).collect(Collectors.toList());
-                return filteredBookings;
-            }
-            case "ALL" -> {
-                return bookings;
-            }
-            default -> throw new UnsupportedStateException("Передан не корректный параметр state - " + state);
+
+        if (state.equals("CURRENT")) {
+            filteredBookings = bookings.stream().filter(booking -> (LocalDateTime.now()).isAfter(booking.getStart()) && (LocalDateTime.now()).isBefore(booking.getEnd())).collect(Collectors.toList());
+            return filteredBookings;
+        }
+        if (state.equals("PAST")) {
+
+            filteredBookings = bookings.stream().filter(booking -> booking.getEnd().isBefore(LocalDateTime.now())).collect(Collectors.toList());
+            return filteredBookings;
+        }
+        if (state.equals("FUTURE")) {
+
+            filteredBookings = bookings.stream().filter(booking -> booking.getStart().isAfter(LocalDateTime.now())).collect(Collectors.toList());
+            return filteredBookings;
+        }
+        if (state.equals("WAITING")) {
+
+            filteredBookings = bookings.stream().filter(booking -> booking.getStatus().equals(Status.WAITING)).collect(Collectors.toList());
+            return filteredBookings;
+        }
+        if (state.equals("REJECTED")) {
+
+            filteredBookings = bookings.stream().filter(booking -> booking.getStatus().equals(Status.REJECTED)).collect(Collectors.toList());
+            return filteredBookings;
+        }
+        if (state.equals("ALL")) {
+            return bookings;
+        } else {
+            throw new UnsupportedStateException("Передан не корректный параметр state - " + state);
         }
     }
-
 }
