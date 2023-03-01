@@ -8,6 +8,5 @@ public class DateTimeException extends RuntimeException {
     public DateTimeException(String message) {
 
         super(message);
-        log.error("Ошибка даты бронирования");
     }
 }

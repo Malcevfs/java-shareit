@@ -8,6 +8,5 @@ public class OwnerErrorException extends RuntimeException {
     public OwnerErrorException(String message) {
 
         super(message);
-        log.error("Ошибка владельца предмета");
     }
 }

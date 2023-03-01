@@ -8,6 +8,5 @@ public class UserNotFoundErrorException extends RuntimeException {
     public UserNotFoundErrorException(String message) {
 
         super(message);
-        log.error("Ошибка поиска пользователя");
     }
 }

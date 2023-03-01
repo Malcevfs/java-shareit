@@ -8,6 +8,5 @@ public class EmailErrorException extends RuntimeException {
     public EmailErrorException(String message) {
 
         super(message);
-        log.error("Ошибка валидации Email");
     }
 }

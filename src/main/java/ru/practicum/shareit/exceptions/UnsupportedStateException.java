@@ -8,6 +8,5 @@ public class UnsupportedStateException extends RuntimeException {
     public UnsupportedStateException(String message) {
 
         super(message);
-        log.error("Ошибка параметра поиска");
     }
 }
