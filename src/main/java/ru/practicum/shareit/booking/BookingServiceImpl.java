@@ -1,6 +1,8 @@
 package ru.practicum.shareit.booking;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.BookingDto;
@@ -91,26 +93,31 @@ public class BookingServiceImpl {
         return BookingMapper.toBookingDto(booking);
     }
 
-    public Collection<BookingDto> getAllBookings(int userId, String state) {
+    public Collection<BookingDto> getAllBookings(int userId, String state, int from, int size) {
         ArrayList<BookingDto> bookings = new ArrayList<>();
         userService.getUserById(userId);
-
-        for (Booking booking : bookingRepository.findAllByBookerIdOrderByStartDesc(userId)) {
+        int page = from / size;
+        Pageable pageRequest = PageRequest.of(page, size);
+        Pageable pageable = PageRequest.of(from, size);
+        for (Booking booking : bookingRepository.findAllByBookerIdOrderByStartDesc(userId, pageRequest)) {
             bookings.add(BookingMapper.toBookingDto(booking));
         }
         return getBookingDtos(state, bookings);
 
     }
 
-    public Collection<BookingDto> getAllBookingsItemsForOwner(int userId, String state) {
+    public Collection<BookingDto> getAllBookingsItemsForOwner(int userId, String state, int from, int size) {
         ArrayList<BookingDto> bookings = new ArrayList<>();
 
         userService.getUserById(userId);
 
-        List<Item> itemsByOwner = itemRepository.getAllByOwnerIdOrderByIdAsc(userId);
+        int page = from / size;
+        Pageable pageRequest = PageRequest.of(page, size);
+        Pageable pageable = PageRequest.of(from, size);
+        List<Item> itemsByOwner = itemRepository.getAllByOwnerIdOrderByIdAsc(userId, pageable);
 
         for (Item item : itemsByOwner) {
-            for (Booking booking : bookingRepository.findAllByItemIdOrderByStartDesc(item.getId())) {
+            for (Booking booking : bookingRepository.findAllByItemIdOrderByStartDesc(item.getId(), pageRequest)) {
                 userService.getUserById(booking.getBooker().getId());
                 bookings.add(BookingMapper.toBookingDto(booking));
             }

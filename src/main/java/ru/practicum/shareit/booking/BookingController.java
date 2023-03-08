@@ -6,6 +6,8 @@ import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.ShortBookingDto;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.Collection;
 
 @RequiredArgsConstructor
@@ -30,12 +32,16 @@ public class BookingController {
     }
 
     @GetMapping()
-    public Collection<BookingDto> getAllBookings(@RequestHeader("X-Sharer-User-Id") Integer userId, @RequestParam(value = "state", defaultValue = "ALL") String state) {
-        return service.getAllBookings(userId,state);
+    public Collection<BookingDto> getAllBookings(@RequestHeader("X-Sharer-User-Id") Integer userId, @RequestParam(value = "state", defaultValue = "ALL") String state,
+                                                 @PositiveOrZero @RequestParam(defaultValue = "0") Integer from,
+                                                 @Positive @RequestParam(defaultValue = "10") Integer size) {
+        return service.getAllBookings(userId,state, from, size);
     }
 
     @GetMapping("/owner")
-    public Collection<BookingDto> getBookingsByState(@RequestHeader("X-Sharer-User-Id") Integer userId, @RequestParam(value = "state", defaultValue = "ALL") String state) {
-        return service.getAllBookingsItemsForOwner(userId, state);
+    public Collection<BookingDto> getBookingsByState(@RequestHeader("X-Sharer-User-Id") Integer userId, @RequestParam(value = "state", defaultValue = "ALL") String state,
+                                                     @PositiveOrZero @RequestParam(defaultValue = "0") Integer from,
+                                                     @Positive @RequestParam(defaultValue = "10") Integer size) {
+        return service.getAllBookingsItemsForOwner(userId, state, from, size);
     }
 }
