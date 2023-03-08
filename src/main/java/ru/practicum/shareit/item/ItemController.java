@@ -34,10 +34,8 @@ public class ItemController {
     }
 
     @GetMapping
-    public Collection<ItemBookingDto> getAllItems(@RequestHeader("X-Sharer-User-Id") Integer userId,
-                                                  @PositiveOrZero @RequestParam(defaultValue = "0") Integer from,
-                                                  @Positive @RequestParam(defaultValue = "10") Integer size) {
-        return service.getAllItems(userId, from, size);
+    public Collection<ItemBookingDto> getAllItems(@RequestHeader("X-Sharer-User-Id") Integer userId) {
+        return service.getAllItems(userId);
     }
 
     @GetMapping(path = "/search")

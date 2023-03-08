@@ -86,9 +86,9 @@ public class ItemServiceImpl {
     }
 
     @Transactional
-    public Collection<ItemBookingDto> getAllItems(int userId, int from, int size) {
+    public Collection<ItemBookingDto> getAllItems(int userId) {
         Collection<ItemBookingDto> userItems = new ArrayList<>();
-        for (Item item : itemRepository.getAllByOwnerIdOrderByIdAsc(userId, PageRequest.of(from, size))) {
+        for (Item item : itemRepository.getAllByOwnerIdOrderByIdAsc(userId)) {
             userItems.add(setBookings(userId, item));
         }
         return userItems;

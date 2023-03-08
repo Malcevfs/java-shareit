@@ -19,6 +19,7 @@ import ru.practicum.shareit.user.model.User;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -111,13 +112,10 @@ public class BookingServiceImpl {
 
         userService.getUserById(userId);
 
-        int page = from / size;
-        Pageable pageRequest = PageRequest.of(page, size);
-        Pageable pageable = PageRequest.of(from, size);
-        List<Item> itemsByOwner = itemRepository.getAllByOwnerIdOrderByIdAsc(userId, pageable);
+        List<Item> itemsByOwner = itemRepository.getAllByOwnerIdOrderByIdAsc(userId);
 
         for (Item item : itemsByOwner) {
-            for (Booking booking : bookingRepository.findAllByItemIdOrderByStartDesc(item.getId(), pageRequest)) {
+            for (Booking booking : bookingRepository.findAllByItemIdOrderByStartDesc(item.getId(), PageRequest.of(from, size))) {
                 userService.getUserById(booking.getBooker().getId());
                 bookings.add(BookingMapper.toBookingDto(booking));
             }
