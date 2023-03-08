@@ -19,7 +19,6 @@ import ru.practicum.shareit.user.model.User;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,11 +32,12 @@ public class BookingServiceImpl {
 
 
     public BookingDto createBooking(int userId, ShortBookingDto shortBookingDto) {
+        User user = userRepository.findById(userId).orElseThrow(() ->
+                new UserNotFoundErrorException(String.format("User с id - %x не найден", userId)));
 
         Item item = itemRepository.findById(shortBookingDto.getItemId()).orElseThrow(() ->
                 new ItemNotFoundException(String.format("Item с id - %x  не найден", shortBookingDto.getId())));
-        User user = userRepository.findById(userId).orElseThrow(() ->
-                new UserNotFoundErrorException(String.format("User с id - %x не найден", userId)));
+
         if (item.getOwner().getId() == userId) {
             throw new ItemNotFoundException("Владелец премета не может забронировать свою вещь");
         }

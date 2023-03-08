@@ -2,7 +2,6 @@ package ru.practicum.shareit.request;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.item.dto.ItemBookingDto;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.model.ItemRequest;
 
@@ -10,7 +9,6 @@ import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.Collection;
-import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -19,23 +17,24 @@ public class ItemRequestController {
     private final ItemRequestServiceImpl service;
 
     @PostMapping
-    public ItemRequest addRequest(@RequestHeader("X-Sharer-User-Id") Integer userId, @RequestBody @Valid ItemRequest request){
-       return service.addRequest(userId, request);
+    public ItemRequest addRequest(@RequestHeader("X-Sharer-User-Id") Integer userId, @RequestBody @Valid ItemRequest request) {
+        return service.addRequest(userId, request);
     }
 
     @GetMapping
-    public Collection<ItemRequestDto> getOwnerRequest(@RequestHeader("X-Sharer-User-Id") Integer userId){
+    public Collection<ItemRequestDto> getOwnerRequest(@RequestHeader("X-Sharer-User-Id") Integer userId) {
         return service.getOwnerRequest(userId);
     }
 
     @GetMapping("/all")
     public Collection<ItemRequestDto> getOtherRequests(@RequestHeader("X-Sharer-User-Id") Integer userId,
-                                                      @PositiveOrZero @RequestParam(defaultValue = "0") Integer from,
-                                                      @Positive @RequestParam(defaultValue = "10") Integer size){
+                                                       @PositiveOrZero @RequestParam(defaultValue = "0") Integer from,
+                                                       @Positive @RequestParam(defaultValue = "10") Integer size) {
         return service.getOtherRequests(userId, from, size);
     }
+
     @GetMapping(path = "/{requestId}")
     public ItemRequestDto getItemById(@RequestHeader("X-Sharer-User-Id") Integer userId, @PathVariable("requestId") Integer requestId) {
-        return  service.getRequestById(userId, requestId);
+        return service.getRequestById(userId, requestId);
     }
 }

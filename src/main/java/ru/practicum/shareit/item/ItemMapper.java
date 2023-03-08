@@ -10,7 +10,6 @@ import java.util.ArrayList;
 
 public class ItemMapper {
 
-
     public static ItemDto toItemDto(Item item) {
         int requestId = 0;
         if (item.getRequest() != null) {
@@ -37,6 +36,7 @@ public class ItemMapper {
                 new ArrayList<>()
         );
     }
+
     public static Item toItem(ItemDto itemDto, User user, ItemRequest itemRequest) {
         return new Item(itemDto.getId(),
                 itemDto.getName(),

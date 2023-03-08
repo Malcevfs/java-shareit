@@ -7,12 +7,12 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.BookingMapper;
 import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.exceptions.*;
+import ru.practicum.shareit.item.comment.Comment;
 import ru.practicum.shareit.item.comment.CommentDto;
 import ru.practicum.shareit.item.comment.CommentMapper;
 import ru.practicum.shareit.item.comment.CommentRepository;
 import ru.practicum.shareit.item.dto.ItemBookingDto;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.comment.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.request.ItemRequestRepository;
 import ru.practicum.shareit.request.model.ItemRequest;
@@ -25,7 +25,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
 @RequiredArgsConstructor
 @Service
 public class ItemServiceImpl {
@@ -36,7 +35,6 @@ public class ItemServiceImpl {
     private final CommentRepository commentRepository;
     private final ItemRequestRepository itemRequestRepository;
 
-
     public ItemDto createItem(int userId, ItemDto itemDto) {
         if (itemDto.getAvailable() == null) {
             throw new ItemAviableErrorException("Параметр Available не может быть пустым");
@@ -46,7 +44,7 @@ public class ItemServiceImpl {
                 new UserNotFoundErrorException(String.format("User с id - %x не найден", userId)));
         ItemRequest itemRequest = null;
 
-        if(itemDto.getRequestId() != 0) {
+        if (itemDto.getRequestId() != 0) {
             itemRequest = itemRequestRepository.findById(itemDto.getRequestId()).orElseThrow(() ->
                     new UserNotFoundErrorException(String.format("ItemRequest с id - %x не найден", itemDto.getRequestId())));
         }
