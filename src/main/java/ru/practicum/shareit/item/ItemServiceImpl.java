@@ -137,7 +137,7 @@ public class ItemServiceImpl {
         return CommentMapper.toCommentDto(comment);
     }
 
-    private ItemBookingDto setComments(ItemBookingDto itemBookingDto, int itemId) {
+    private ItemBookingDto  setComments(ItemBookingDto itemBookingDto, int itemId) {
         List<CommentDto> commentDtos = commentRepository.findAllByItemId(itemId).stream()
                 .map(CommentMapper::toCommentDto)
                 .collect(Collectors.toList());

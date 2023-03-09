@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Entity
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Comment {
