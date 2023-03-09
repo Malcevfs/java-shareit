@@ -18,6 +18,7 @@ import ru.practicum.shareit.item.comment.CommentRepository;
 import ru.practicum.shareit.item.dto.ItemBookingDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.request.ItemRequestRepository;
 import ru.practicum.shareit.user.UserMapper;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.dto.UserDto;
@@ -43,6 +44,8 @@ class ItemServiceImplTest {
     private BookingRepository bookingRepository;
     @Mock
     private CommentRepository commentRepository;
+    @Mock
+    private ItemRequestRepository itemRequestRepository;
     @InjectMocks
     ItemServiceImpl itemService;
 
@@ -114,6 +117,7 @@ class ItemServiceImplTest {
                 .build();
 
         commentDto1 = CommentMapper.toCommentDto(comment1);
+
     }
 
     @Test
