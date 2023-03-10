@@ -22,7 +22,7 @@ public class BookingController {
     }
 
     @PatchMapping("/{bookingId}")
-    public BookingDto approveBooking(@RequestHeader("X-Sharer-User-Id") Integer userId, @PathVariable int bookingId, @RequestParam boolean approved) {
+    public BookingDto approveBooking(@RequestHeader("X-Sharer-User-Id") Integer userId, @PathVariable("bookingId") Integer bookingId, @RequestParam boolean approved) {
         return service.approveBooking(userId, bookingId, approved);
     }
 
