@@ -29,7 +29,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(BookingController.class)
+@WebMvcTest(controllers = BookingController.class)
 @AutoConfigureMockMvc
 class BookingControllerTest {
     @MockBean
@@ -89,20 +89,8 @@ class BookingControllerTest {
                         .header(HEADER, 1)
                         .content(mapper.writeValueAsString(bookingDto)))
                 .andExpect(status().isOk());
-    }
 
-//    @SneakyThrows
-//    @Test
-//    void approveBooking() {
-//        when(bookingService.approveBooking(anyInt(), anyInt(), any(Boolean.class))).thenReturn(bookingDto);
-//
-//        mockMvc.perform(patch("/bookings/1")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .accept(MediaType.APPLICATION_JSON)
-//                        .header(HEADER, 1)
-//                        .content(mapper.writeValueAsString(bookingDto)))
-//                .andExpect(status().isOk());
-//    }
+    }
 
     @SneakyThrows
     @Test

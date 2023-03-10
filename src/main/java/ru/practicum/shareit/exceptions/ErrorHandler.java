@@ -21,13 +21,6 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponse handleException(final EmailErrorException e) {
-        log.error("Ошбика валидации email: {}", e.getMessage());
-        return new ErrorResponse("error", "Такой email уже зарегестирован");
-    }
-
-    @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleException(final MethodArgumentNotValidException e) {
         log.error("Ошбика валидации: {}", e.getMessage());
