@@ -18,5 +18,5 @@ public class ItemDto {
     @NotBlank(message = "Описание для предмета не может быть пустым")
     String description;
     Boolean available;
-
+    int requestId;
 }

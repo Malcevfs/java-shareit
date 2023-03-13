@@ -21,7 +21,7 @@ public class UserServiceImpl {
 
     public UserDto updateUser(User user, int userId) {
         User newUser = userRepository.findById(userId).orElseThrow(() ->
-                new UserNotFoundErrorException(String.format("User с id - %x", userId)));
+                new UserNotFoundErrorException(String.format("User с id - %x не найден", userId)));
 
         if (user.getName() != null) {
             newUser.setName(user.getName());
@@ -35,7 +35,7 @@ public class UserServiceImpl {
 
     public UserDto getUserById(int userId) {
         User user = userRepository.findById(userId).orElseThrow(() ->
-                new UserNotFoundErrorException(String.format("Пользователь с id - %x", userId)));
+                new UserNotFoundErrorException(String.format("User с id - %x не найден", userId)));
         return UserMapper.toUserDto(user);
     }
 
