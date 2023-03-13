@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -40,11 +41,14 @@ public class ItemRequestServiceImpl {
                 new UserNotFoundErrorException(String.format("User с id - %x не найден", userId)));
 
         Collection<ItemRequestDto> itemRequests = new ArrayList<>();
-        List<ItemDto> items = new ArrayList<>();
+        List<Integer> requestId = new ArrayList<>();
+
         for (ItemRequest item : repository.findAllByRequesterIdOrderByCreatedDesc(userId)) {
-            for (Item item1 : itemRepository.findAllByRequestId(item.getId())) {
-                items.add(ItemMapper.toItemDto(item1));
-            }
+            requestId.add(item.getRequester().getId());
+            List<ItemDto> items = itemRepository.findByRequest_IdIn(requestId)
+                    .stream()
+                    .map(ItemMapper::toItemDto)
+                    .collect(Collectors.toList());
             ItemRequestDto dto = ItemRequestMapper.toItemRequestDto(item);
             dto.setItems(items);
             itemRequests.add(dto);
@@ -58,11 +62,15 @@ public class ItemRequestServiceImpl {
                 new UserNotFoundErrorException(String.format("User с id - %x не найден", userId)));
 
         Collection<ItemRequestDto> itemRequests = new ArrayList<>();
-        List<ItemDto> items = new ArrayList<>();
+        List<Integer> requestId = new ArrayList<>();
+
         for (ItemRequest item : repository.findAllByRequesterIdIsNotOrderByCreatedDesc(userId, PageRequest.of(from, size))) {
-            for (Item item1 : itemRepository.findAllByRequestId(item.getId())) {
-                items.add(ItemMapper.toItemDto(item1));
-            }
+            requestId.add(item.getRequester().getId());
+
+            List<ItemDto> items = itemRepository.findByRequest_IdIn(requestId)
+                    .stream()
+                    .map(ItemMapper::toItemDto)
+                    .collect(Collectors.toList());
             ItemRequestDto dto = ItemRequestMapper.toItemRequestDto(item);
             dto.setItems(items);
             itemRequests.add(dto);

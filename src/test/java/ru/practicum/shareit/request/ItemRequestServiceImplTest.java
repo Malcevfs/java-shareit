@@ -21,8 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -96,7 +95,7 @@ class ItemRequestServiceImplTest {
         when(itemRequestRepository.findAllByRequesterIdOrderByCreatedDesc(user1.getId()))
                 .thenReturn(List.of(itemRequest1));
 
-        when(itemRepository.findAllByRequestId(item1.getId()))
+        when(itemRepository.findByRequest_IdIn(anyList()))
                 .thenReturn(List.of(item1));
 
         Collection<ItemRequestDto> itemRequests = itemRequestService.getOwnerRequest(user1.getId());
@@ -120,7 +119,7 @@ class ItemRequestServiceImplTest {
                 .thenReturn(Optional.of(user2));
         when(itemRequestRepository.findAllByRequesterIdIsNotOrderByCreatedDesc(anyInt(), any(Pageable.class)))
                 .thenReturn(List.of(itemRequest1));
-        when(itemRepository.findAllByRequestId(item1.getId()))
+        when(itemRepository.findByRequest_IdIn(anyList()))
                 .thenReturn(List.of(item1));
 
         Collection<ItemRequestDto> itemRequestDto = itemRequestService.getOtherRequests(user2.getId(), 0, 10);
