@@ -1,6 +1,8 @@
 package ru.practicum.shareit.booking;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.BookingDto;
@@ -30,11 +32,12 @@ public class BookingServiceImpl {
 
 
     public BookingDto createBooking(int userId, ShortBookingDto shortBookingDto) {
+        User user = userRepository.findById(userId).orElseThrow(() ->
+                new UserNotFoundErrorException(String.format("User с id - %x не найден", userId)));
 
         Item item = itemRepository.findById(shortBookingDto.getItemId()).orElseThrow(() ->
                 new ItemNotFoundException(String.format("Item с id - %x  не найден", shortBookingDto.getId())));
-        User user = userRepository.findById(userId).orElseThrow(() ->
-                new UserNotFoundErrorException(String.format("User с id - %x не найден", userId)));
+
         if (item.getOwner().getId() == userId) {
             throw new ItemNotFoundException("Владелец премета не может забронировать свою вещь");
         }
@@ -91,18 +94,20 @@ public class BookingServiceImpl {
         return BookingMapper.toBookingDto(booking);
     }
 
-    public Collection<BookingDto> getAllBookings(int userId, String state) {
+    public Collection<BookingDto> getAllBookings(int userId, String state, int from, int size) {
         ArrayList<BookingDto> bookings = new ArrayList<>();
         userService.getUserById(userId);
-
-        for (Booking booking : bookingRepository.findAllByBookerIdOrderByStartDesc(userId)) {
+        int page = from / size;
+        Pageable pageRequest = PageRequest.of(page, size);
+        Pageable pageable = PageRequest.of(from, size);
+        for (Booking booking : bookingRepository.findAllByBookerIdOrderByStartDesc(userId, pageRequest)) {
             bookings.add(BookingMapper.toBookingDto(booking));
         }
         return getBookingDtos(state, bookings);
 
     }
 
-    public Collection<BookingDto> getAllBookingsItemsForOwner(int userId, String state) {
+    public Collection<BookingDto> getAllBookingsItemsForOwner(int userId, String state, int from, int size) {
         ArrayList<BookingDto> bookings = new ArrayList<>();
 
         userService.getUserById(userId);
@@ -110,7 +115,7 @@ public class BookingServiceImpl {
         List<Item> itemsByOwner = itemRepository.getAllByOwnerIdOrderByIdAsc(userId);
 
         for (Item item : itemsByOwner) {
-            for (Booking booking : bookingRepository.findAllByItemIdOrderByStartDesc(item.getId())) {
+            for (Booking booking : bookingRepository.findAllByItemIdOrderByStartDesc(item.getId(), PageRequest.of(from, size))) {
                 userService.getUserById(booking.getBooker().getId());
                 bookings.add(BookingMapper.toBookingDto(booking));
             }

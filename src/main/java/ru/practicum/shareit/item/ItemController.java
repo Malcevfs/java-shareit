@@ -8,6 +8,8 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.Collection;
 
 @RequiredArgsConstructor
@@ -17,7 +19,7 @@ public class ItemController {
     private final ItemServiceImpl service;
 
     @PostMapping
-    public ItemDto createItem(@RequestHeader("X-Sharer-User-Id") Integer userId, @RequestBody @Valid Item item) {
+    public ItemDto createItem(@RequestHeader("X-Sharer-User-Id") Integer userId, @RequestBody @Valid ItemDto item) {
         return service.createItem(userId, item);
     }
 
@@ -37,8 +39,10 @@ public class ItemController {
     }
 
     @GetMapping(path = "/search")
-    public Collection<ItemDto> searchItemFromText(@RequestParam(value = "text") String text) {
-        return service.searchItem(text);
+    public Collection<ItemDto> searchItemFromText(@RequestParam(value = "text") String text,
+                                                  @PositiveOrZero @RequestParam(defaultValue = "0") Integer from,
+                                                  @Positive @RequestParam(defaultValue = "10") Integer size) {
+        return service.searchItem(text, from, size);
     }
 
     @PostMapping(path = "{itemId}/comment")
