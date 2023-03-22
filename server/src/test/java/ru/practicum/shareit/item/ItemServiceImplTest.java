@@ -213,6 +213,21 @@ class ItemServiceImplTest {
     }
 
     @Test
+    void getItem_allItemsTest() {
+        when(userRepository.findById(anyInt()))
+                .thenReturn(Optional.of(user1));
+
+        when(itemRepository.getAllByOwnerIdOrderByIdAsc(anyInt()))
+                .thenReturn(List.of(item1, item2));
+
+        Collection<ItemBookingDto> itemBookingDtos = itemService.getAllItems(user1.getId());
+
+
+        assertEquals(2, itemBookingDtos.size());
+
+    }
+
+    @Test
     void getItem_whenItemNotFound_ItemNotFoundException() {
         when(itemRepository.findById(anyInt()))
                 .thenReturn(Optional.empty());

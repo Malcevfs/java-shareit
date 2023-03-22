@@ -19,7 +19,6 @@ import ru.practicum.shareit.request.ItemRequestRepository;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.UserServiceImpl;
-import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 
 import java.time.LocalDateTime;
@@ -36,7 +35,6 @@ public class ItemServiceImpl {
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
     private final ItemRequestRepository itemRequestRepository;
-    private final UserServiceImpl userService;
 
     @Transactional
     public ItemDto createItem(int userId, ItemDto itemDto) {
@@ -100,7 +98,8 @@ public class ItemServiceImpl {
     }
 
     public Collection<ItemBookingDto> getAllItems(int userId) {
-        UserDto user = userService.getUserById(userId);
+        User user = userRepository.findById(userId).orElseThrow(() ->
+                new UserNotFoundErrorException(String.format("User с id - %x не найден", userId)));
         List<Item> items = itemRepository.getAllByOwnerIdOrderByIdAsc(userId);
 
         Set<Integer> ids = items.stream().map(Item::getId).collect(Collectors.toSet());
