@@ -30,7 +30,7 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
     ArrayList<Booking> findAllByBookerIdAndStartIsAfter(Integer bookerId, LocalDateTime date, Pageable pageable);
 
     List<Booking> findByItemIdAndBookerIdAndEndLessThanAndStatus(
-            Long id, Long id1, LocalDateTime end, Status status);
+            int id, int id1, LocalDateTime end, Status status);
 
     Optional<Booking> findFirstByBookerAndItemIdAndEndBefore(User booker, Integer itemId, LocalDateTime date);
 

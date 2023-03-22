@@ -382,7 +382,7 @@ class BookingServiceImplTest {
                 10);
 
         verify(bookingRepository)
-                .findAllByBookerIdOrderByStartDesc(anyInt(), any(Pageable.class));
+                .findAllByBookerIdAndEndIsBefore(anyInt(), any(), any(Pageable.class));
 
     }
 
@@ -395,7 +395,7 @@ class BookingServiceImplTest {
                 10);
 
         verify(bookingRepository)
-                .findAllByBookerIdOrderByStartDesc(anyInt(), any(Pageable.class));
+                .findByBookerIdCurrDate(anyInt(), any(), any(Pageable.class));
 
     }
 
@@ -408,7 +408,7 @@ class BookingServiceImplTest {
                 10);
 
         verify(bookingRepository)
-                .findAllByBookerIdOrderByStartDesc(anyInt(), any(Pageable.class));
+                .findAllByBookerIdAndStartIsAfter(anyInt(), any(), any(Pageable.class));
 
     }
 
@@ -421,7 +421,7 @@ class BookingServiceImplTest {
                 10);
 
         verify(bookingRepository)
-                .findAllByBookerIdOrderByStartDesc(anyInt(), any(Pageable.class));
+                .findAllByBookerIdAndStatus(anyInt(), any(), any(Pageable.class));
 
     }
 
@@ -434,7 +434,7 @@ class BookingServiceImplTest {
                 10);
 
         verify(bookingRepository)
-                .findAllByBookerIdOrderByStartDesc(anyInt(), any(Pageable.class));
+                .findAllByBookerIdAndStatus(anyInt(), any(), any(Pageable.class));
 
     }
 
@@ -444,13 +444,11 @@ class BookingServiceImplTest {
         UnsupportedStateException exception = assertThrows(UnsupportedStateException.class,
                 () -> bookingService.getAllBookings(user1.getId(), "INCORRECT", 0, 10
                 ));
-        assertEquals("Передан не корректный параметр state - INCORRECT", exception.getMessage());
+        assertEquals("Unknown state: INCORRECT", exception.getMessage());
     }
 
     @Test
     void getAllBookingsItemsForOwner() {
-        when(itemRepository.getAllByOwnerIdOrderByIdAsc(user1.getId()))
-                .thenReturn(List.of(item1));
 
         when(userService.getUserById(user1.getId()))
                 .thenReturn(any());
@@ -463,6 +461,6 @@ class BookingServiceImplTest {
                 10);
 
         verify(bookingRepository)
-                .findAllByItemIdOrderByStartDesc(user1.getId(), pageRequest);
+                .findAllItemBookingStatus(anyInt(), any(), any(Pageable.class));
     }
 }

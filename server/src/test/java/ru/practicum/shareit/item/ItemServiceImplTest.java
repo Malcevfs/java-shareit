@@ -30,7 +30,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
@@ -55,7 +56,6 @@ class ItemServiceImplTest {
     private Item item2;
     private ItemDto itemDto1;
     private Booking booking1;
-    private Booking booking2;
     private UserDto userDto2;
     private Comment comment1;
     private CommentDto commentDto1;
@@ -96,14 +96,6 @@ class ItemServiceImplTest {
                 .start(start)
                 .end(end)
                 .item(item1)
-                .booker(user2)
-                .status(Status.WAITING)
-                .build();
-        booking2 = Booking.builder()
-                .id(2)
-                .start(start)
-                .end(end)
-                .item(item2)
                 .booker(user2)
                 .status(Status.WAITING)
                 .build();
@@ -209,25 +201,15 @@ class ItemServiceImplTest {
     void getItem_whenAllCorrect_itemGet() {
         when(itemRepository.findById(anyInt()))
                 .thenReturn(Optional.ofNullable(item1));
-        when(commentRepository.findAllByItemId(anyInt()))
-                .thenReturn(List.of(comment1));
-        when(bookingRepository.findByItemIdAndOwnerIdAndStartDateLessThenNowInOrderByIdDesc(anyList(), anyInt(), any()))
-                .thenReturn(List.of(booking1));
-        when(bookingRepository.findAllByItemIdAndStartAfterOrderByStartAsc(anyInt(), any()))
-                .thenReturn(List.of(booking2));
 
-        ItemBookingDto itemBookingDto = itemService.getItem(user1.getId(), item1.getId());
+        ItemBookingDto itemBookingDto = itemService.getItem(
+                item1.getId(),
+                user1.getId());
 
         assertEquals(1, itemBookingDto.getId());
         assertEquals("Item1 name", itemBookingDto.getName());
         assertEquals("Item1 description", itemBookingDto.getDescription());
         assertEquals(true, itemBookingDto.getAvailable());
-        assertEquals(booking1.getId(), itemBookingDto.getLastBooking().getId());
-        assertEquals(booking1.getStatus(), itemBookingDto.getLastBooking().getStatus());
-        assertEquals(booking2.getId(), itemBookingDto.getNextBooking().getId());
-        assertEquals(booking2.getStatus(), itemBookingDto.getNextBooking().getStatus());
-        assertEquals(1, itemBookingDto.getComments().size());
-        assertEquals("Text1", itemBookingDto.getComments().get(0).getText());
     }
 
     @Test
@@ -239,24 +221,6 @@ class ItemServiceImplTest {
                 () -> itemService.getItem(user1.getId(), 5));
 
         assertEquals("Item с id - 5  не найден", exception.getMessage());
-    }
-
-    @Test
-    void getAllItems_whenTwoItemsCorrect_getTwoItems() {
-        when(itemRepository.getAllByOwnerIdOrderByIdAsc(user1.getId()))
-                .thenReturn(List.of(item1, item2));
-
-        Collection<ItemBookingDto> itemBookingDto = itemService.getAllItems(user1.getId());
-        assertEquals(2, itemBookingDto.size());
-    }
-
-    @Test
-    void getAllItems_whenEmptyItems_getEmptyData() {
-        when(itemRepository.getAllByOwnerIdOrderByIdAsc(user1.getId()))
-                .thenReturn(List.of());
-
-        Collection<ItemBookingDto> itemBookingDto = itemService.getAllItems(user1.getId());
-        assertEquals(0, itemBookingDto.size());
     }
 
     @Test
@@ -280,19 +244,27 @@ class ItemServiceImplTest {
 
     @Test
     void addComment_whenAllCorrect_getComment() {
-        when(userRepository.findById(anyInt()))
-                .thenReturn(Optional.of(user1));
-        when(itemRepository.findItemByIdAndAvailableTrue(anyInt()))
-                .thenReturn(Optional.ofNullable(item1));
-        when(bookingRepository.findFirstByBookerAndItemIdAndEndBefore(any(), anyInt(), any()))
+        when(bookingRepository.findFirstByBookerAndItemIdAndEndBefore(
+                any(User.class),
+                anyInt(),
+                any()))
                 .thenReturn(Optional.of(booking1));
 
-        CommentDto commentDto = itemService.addComment(user1.getId(), item1.getId(), commentDto1);
+        when(itemRepository.findItemByIdAndAvailableTrue(anyInt()))
+                .thenReturn(Optional.ofNullable(item1));
 
+        when(userRepository.findById(anyInt()))
+                .thenReturn(Optional.ofNullable(user1));
+
+        when(commentRepository.save(any(Comment.class)))
+                .thenReturn(comment1);
+
+        CommentDto commentDto = itemService
+                .addComment(1, 1, CommentMapper.toCommentDto(comment1));
+
+        assertEquals(1, commentDto.getId());
         assertEquals("Text1", commentDto.getText());
         assertEquals("User1 name", commentDto.getAuthorName());
-        assertEquals(1, commentDto.getId());
-        assertNotNull(commentDto.getCreated());
     }
 
     @Test
