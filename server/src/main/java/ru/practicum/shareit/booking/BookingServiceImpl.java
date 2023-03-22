@@ -31,7 +31,7 @@ public class BookingServiceImpl {
     private final UserRepository userRepository;
     private final UserServiceImpl userService;
 
-
+    @Transactional
     public BookingDto createBooking(int userId, ShortBookingDto shortBookingDto) {
         User user = userRepository.findById(userId).orElseThrow(() ->
                 new UserNotFoundErrorException(String.format("User с id - %x не найден", userId)));

@@ -27,7 +27,6 @@ public class ItemRequestServiceImpl {
     private final UserRepository userRepository;
     private final ItemRepository itemRepository;
 
-    @Transactional
     public ItemRequest addRequest(int userId, ItemRequest itemRequest) {
 
         User user = userRepository.findById(userId).orElseThrow(() ->

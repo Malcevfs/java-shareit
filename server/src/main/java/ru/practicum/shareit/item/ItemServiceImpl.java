@@ -77,7 +77,6 @@ public class ItemServiceImpl {
         return ItemMapper.toItemDto(itemRepository.save(newItem));
     }
 
-    @Transactional
     public ItemBookingDto getItem(int userId, int itemId) {
         Item item = itemRepository.findById(itemId).orElseThrow(() ->
                 new ItemNotFoundException(String.format("Item с id - %x  не найден", itemId)));
