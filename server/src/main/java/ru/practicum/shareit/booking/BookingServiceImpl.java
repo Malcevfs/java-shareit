@@ -20,7 +20,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.List;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -98,7 +97,7 @@ public class BookingServiceImpl {
     }
 
     public Collection<BookingDto> getAllBookings(int userId, String state, int from, int size) {
-        ArrayList<Booking> bookings = new ArrayList<>();
+        ArrayList<Booking> bookings;
         userService.getUserById(userId);
         int page = from / size;
         Pageable pageRequest = PageRequest.of(page, size);
@@ -114,7 +113,7 @@ public class BookingServiceImpl {
                 bookings = bookingRepository.findAllByBookerIdAndStartIsAfter(userId, LocalDateTime.now(), pageRequest);
                 break;
             case "CURRENT":
-                bookings = bookingRepository.findByBookerIdCurrDate(userId,  LocalDateTime.now(), pageRequest);
+                bookings = bookingRepository.findByBookerIdCurrDate(userId, LocalDateTime.now(), pageRequest);
                 break;
             case "WAITING":
                 bookings = bookingRepository.findAllByBookerIdAndStatus(userId, Status.WAITING, pageRequest);
@@ -132,15 +131,9 @@ public class BookingServiceImpl {
                 .map(BookingMapper::toBookingDto)
                 .collect(Collectors.toList());
     }
-//        for (Booking booking : bookingRepository.findAllByBookerIdOrderByStartDesc(userId, pageRequest)) {
-//            bookings.add(BookingMapper.toBookingDto(booking));
-//        }
-//        return getBookingDtos(state, bookings);
-
-//    }
 
     public Collection<BookingDto> getAllBookingsItemsForOwner(int userId, String state, int from, int size) {
-        ArrayList<Booking> bookings = new ArrayList<>();
+        ArrayList<Booking> bookings;
         Pageable pageable = PageRequest.of(from, size);
 
         userService.getUserById(userId);
@@ -173,50 +166,5 @@ public class BookingServiceImpl {
                 .map(BookingMapper::toBookingDto)
                 .collect(Collectors.toList());
     }
-//        List<Item> itemsByOwner = itemRepository.getAllByOwnerIdOrderByIdAsc(userId);
-//
-//        for (Item item : itemsByOwner) {
-//            for (Booking booking : bookingRepository.findAllByItemIdOrderByStartDesc(item.getId(), PageRequest.of(from, size))) {
-//                userService.getUserById(booking.getBooker().getId());
-//                bookings.add(BookingMapper.toBookingDto(booking));
-//            }
-//        }
-//
-//        return getBookingDtos(state, bookings);
-//    }
 
-//    private Collection<BookingDto> getBookingDtos(String state, ArrayList<BookingDto> bookings) {
-//        List<BookingDto> filteredBookings;
-//
-//        if (state.equals("CURRENT")) {
-//            filteredBookings = bookings.stream().filter(booking -> (LocalDateTime.now()).isAfter(booking.getStart()) && (LocalDateTime.now()).isBefore(booking.getEnd())).collect(Collectors.toList());
-//
-//            return filteredBookings;
-//        }
-//        if (state.equals("PAST")) {
-//
-//            filteredBookings = bookings.stream().filter(booking -> booking.getEnd().isBefore(LocalDateTime.now())).collect(Collectors.toList());
-//            return filteredBookings;
-//        }
-//        if (state.equals("FUTURE")) {
-//
-//            filteredBookings = bookings.stream().filter(booking -> booking.getStart().isAfter(LocalDateTime.now())).collect(Collectors.toList());
-//            return filteredBookings;
-//        }
-//        if (state.equals("WAITING")) {
-//
-//            filteredBookings = bookings.stream().filter(booking -> booking.getStatus().equals(Status.WAITING)).collect(Collectors.toList());
-//            return filteredBookings;
-//        }
-//        if (state.equals("REJECTED")) {
-//
-//            filteredBookings = bookings.stream().filter(booking -> booking.getStatus().equals(Status.REJECTED)).collect(Collectors.toList());
-//            return filteredBookings;
-//        }
-//        if (state.equals("ALL")) {
-//            return bookings;
-//        } else {
-//            throw new UnsupportedStateException("Передан не корректный параметр state - " + state);
-//        }
-//    }
 }

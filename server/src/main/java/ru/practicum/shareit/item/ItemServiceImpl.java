@@ -17,7 +17,6 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.request.ItemRequestRepository;
 import ru.practicum.shareit.request.model.ItemRequest;
-import ru.practicum.shareit.user.UserMapper;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.UserServiceImpl;
 import ru.practicum.shareit.user.dto.UserDto;
@@ -38,6 +37,7 @@ public class ItemServiceImpl {
     private final CommentRepository commentRepository;
     private final ItemRequestRepository itemRequestRepository;
     private final UserServiceImpl userService;
+
     @Transactional
     public ItemDto createItem(int userId, ItemDto itemDto) {
         if (itemDto.getAvailable() == null) {
@@ -100,7 +100,6 @@ public class ItemServiceImpl {
     }
 
     public Collection<ItemBookingDto> getAllItems(int userId) {
-        Collection<ItemBookingDto> userItems = new ArrayList<>();
         UserDto user = userService.getUserById(userId);
         List<Item> items = itemRepository.getAllByOwnerIdOrderByIdAsc(userId);
 
@@ -133,20 +132,6 @@ public class ItemServiceImpl {
         return items;
     }
 
-//    private ItemBookingDto setBookings(int userId, Item item) {
-//        ItemBookingDto itemDtoBooking = ItemMapper.toItemBookingDto(item);
-//        if (item.getOwner().getId() == userId) {
-//            itemDtoBooking.setLastBooking(
-//                    bookingRepository.findByItemIdAndOwnerIdAndStartDateLessThenNowInOrderByIdDesc(
-//                            itemDtoBooking.getId(), LocalDateTime.now()
-//                    ).stream().findFirst().map(BookingMapper::toBookingItemDto).orElse(null));
-//            itemDtoBooking.setNextBooking(
-//                    bookingRepository.findAllByItemIdAndStartAfterOrderByStartAsc(
-//                            itemDtoBooking.getId(), LocalDateTime.now()
-//                    ).stream().findFirst().map(BookingMapper::toBookingItemDto).orElse(null));
-//        }
-//        return itemDtoBooking;
-//    }
     private void setBookingsToDTO(
             Optional<List<Booking>> lastBookings, Optional<List<Booking>> nextBookings, ItemBookingDto itemResponseDto
     ) {
@@ -178,7 +163,7 @@ public class ItemServiceImpl {
         List<Comment> comments = commentRepository.findAllByItemId(itemResponseDto.getId());
 
         itemResponseDto.setComments(comments.stream()
-                .map(comment -> CommentMapper.toCommentDto(comment))
+                .map(CommentMapper::toCommentDto)
                 .collect(Collectors.toList()));
     }
 
@@ -198,14 +183,6 @@ public class ItemServiceImpl {
 
         commentRepository.save(comment);
         return CommentMapper.toCommentDto(comment);
-    }
-
-    private ItemBookingDto  setComments(ItemBookingDto itemBookingDto, int itemId) {
-        List<CommentDto> commentDtos = commentRepository.findAllByItemId(itemId).stream()
-                .map(CommentMapper::toCommentDto)
-                .collect(Collectors.toList());
-        itemBookingDto.setComments(commentDtos);
-        return itemBookingDto;
     }
 
 }
